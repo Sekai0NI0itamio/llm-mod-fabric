@@ -19,6 +19,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Download Fabric API jar
+        run: |
+          mkdir -p libs
+          FV="0.92.2+1.20.1"
+          curl -sL -o "libs/fabric-api-${FV}.jar" \
+            "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/${FV}/fabric-api-${FV}.jar"
+          ls -la libs/
+
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
 

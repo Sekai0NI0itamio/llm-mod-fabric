@@ -20,7 +20,9 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc:fabric-api:${project.fabric_version}"
+
+    // Fabric API jar is downloaded in CI to libs/ (avoids '+' dynamic-version resolution).
+    modImplementation files("libs/fabric-api-${project.fabric_version}.jar")
 
     // Inference engine: java-llama.cpp (bundles native libs for Linux x86-64 CPU)
     // Native compilation flags (if rebuilding from source): -DLLAMA_CURL=ON -DLLAMA_BUILD_TESTS=OFF
