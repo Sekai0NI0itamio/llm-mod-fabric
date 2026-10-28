@@ -1,5 +1,7 @@
 package com.llama4j;
 
+import java.util.*;
+
 public class QwenChatFormat {
     protected final QwenTokenizer tokenizer;
     private final int imStart;
