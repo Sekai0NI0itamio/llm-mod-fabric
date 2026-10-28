@@ -20,10 +20,6 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-    // Inference engine: java-llama.cpp (bundles native libs for Linux x86-64 CPU)
-    modImplementation "de.kherud:llama:${project.llama_version}"
-    include "de.kherud:llama:${project.llama_version}"
 }
 
 processResources {
