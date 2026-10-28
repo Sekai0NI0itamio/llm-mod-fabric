@@ -12,8 +12,8 @@ import java.nio.file.Path;
 
 public class LlmConfig {
     public String apiKey = "12y081g20808y01";
-    public String preset = "qwopus-4b-coder-mtp";
-    public String modelName = "Qwopus3.5-4B-Coder-MTP-Q4_K_M.gguf";
+    public String preset = "qwen2.5-coder-7b";
+    public String modelName = "qwen2.5-coder-7b-instruct-q4_k_m.gguf";
     public String systemPrompt = "You are a helpful coding assistant.";
     public int gpuLayers = 0;
     public int threads = 3;
