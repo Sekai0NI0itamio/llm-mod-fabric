@@ -18,7 +18,7 @@ public class LlmConfig {
     public int gpuLayers = 0;
     public int threads = 3;
     public int contextLength = 4096;
-    public int port = 8080;
+    public int port = 10080;
     public int maxTokens = 512;
     public float temperature = 0.7f;
 
