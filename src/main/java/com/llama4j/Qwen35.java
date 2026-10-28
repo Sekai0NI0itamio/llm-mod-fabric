@@ -1878,7 +1878,7 @@ final class QwenTokenizer {
     }
 }
 
-class QwenChatFormat {
+public class QwenChatFormat {
     protected final QwenTokenizer tokenizer;
     private final int imStart;
     private final int imEnd;

@@ -18,7 +18,7 @@ repositories {
 dependencies {
     // Minecraft
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 }
 
@@ -31,7 +31,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.release = 21
-    it.options.compilerArgs += ['--add-modules', 'jdk.incubator.vector']
+    it.options.compilerArgs += ['--enable-preview', '--add-modules', 'jdk.incubator.vector']
 }
 
 java {
