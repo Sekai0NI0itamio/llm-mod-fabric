@@ -16,6 +16,3 @@ public class LlmMod implements ModInitializer {
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> LlmHttpServer.stop());
     }
 }
-">
-path">
-/Users/stevennovak/Desktop/Code Projects/GithubBasedEngineering/Mods/llm-mod-fabric/src/main/java/com/stevennovak/llmmod/LlmMod.java
