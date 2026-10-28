@@ -7,11 +7,27 @@ public class Presets {
     private static final Map<String, Preset> MAP = new LinkedHashMap<>();
 
     static {
+        MAP.put("qwen3.5-9b", new Preset(
+            "qwen3.5-9b",
+            "Qwen3.5-9B (Q4_K_M) - Recommended for reasoning",
+            "unsloth/Qwen3.5-9B-GGUF",
+            "Qwen3.5-9B-Q4_K_M.gguf",
+            3, 4096, 512, 0.7f,
+            "You are a helpful coding assistant."
+        ));
         MAP.put("qwopus-4b-coder-mtp", new Preset(
             "qwopus-4b-coder-mtp",
-            "Qwopus3.5-4B-Coder-MTP (Q4_K_M) - Recommended",
+            "Qwopus3.5-4B-Coder-MTP (Q4_K_M) - Fast agent loops",
             "Jackrong/Qwopus3.5-4B-Coder-MTP-GGUF",
             "Qwopus3.5-4B-Coder-MTP-Q4_K_M.gguf",
+            3, 4096, 512, 0.7f,
+            "You are a helpful coding assistant."
+        ));
+        MAP.put("qwen3.5-4b", new Preset(
+            "qwen3.5-4b",
+            "Qwen3.5-4B (Q4_K_M) - Low RAM",
+            "unsloth/Qwen3.5-4B-GGUF",
+            "Qwen3.5-4B-Q4_K_M.gguf",
             3, 4096, 512, 0.7f,
             "You are a helpful coding assistant."
         ));
@@ -20,14 +36,6 @@ public class Presets {
             "Qwen2.5-Coder-7B-Instruct (Q4_K_M)",
             "Qwen/Qwen2.5-Coder-7B-Instruct-GGUF",
             "qwen2.5-coder-7b-instruct-q4_k_m.gguf",
-            2, 4096, 512, 0.7f,
-            "You are a helpful coding assistant."
-        ));
-        MAP.put("qwopus-9b-coder", new Preset(
-            "qwopus-9b-coder",
-            "Qwopus3.5-9B-Coder (Q4_K_M) - Needs more RAM",
-            "Jackrong/Qwopus3.5-9B-Coder-GGUF",
-            "Qwopus3.5-9B-Coder-Q4_K_M.gguf",
             2, 4096, 512, 0.7f,
             "You are a helpful coding assistant."
         ));
@@ -42,6 +50,6 @@ public class Presets {
     }
 
     public static String defaultName() {
-        return "qwen2.5-coder-7b";
+        return "qwen3.5-9b";
     }
 }

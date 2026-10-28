@@ -148,7 +148,7 @@ public class LlmHttpServer {
             }
             String content;
             try {
-                content = ENGINE.complete(prompt, maxTokens, temp);
+                content = ENGINE.complete(null, chatMsgs, sys, maxTokens, temp);
             } catch (Exception e) {
                 sendJson(ex, 500, "{\"error\":\"" + e.getMessage().replace("\"", "'") + "\"}");
                 return;
@@ -201,7 +201,7 @@ public class LlmHttpServer {
             float temp = req.has("temperature") ? req.get("temperature").getAsFloat() : LlmConfig.get().temperature;
             if (!ENGINE.isLoaded()) { sendJson(ex, 503, "{\"error\":\"no model loaded\"}"); return; }
             String content;
-            try { content = ENGINE.complete(prompt, maxTokens, temp); }
+            try { content = ENGINE.complete(prompt, null, LlmConfig.get().systemPrompt, maxTokens, temp); }
             catch (Exception e) { sendJson(ex, 500, "{\"error\":\"" + e.getMessage().replace("\"","'") + "\"}"); return; }
             content = content.replace("<|im_end|>", "").trim();
             JsonObject choice = new JsonObject();
