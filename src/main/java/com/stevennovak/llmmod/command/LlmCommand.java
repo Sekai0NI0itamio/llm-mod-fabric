@@ -28,7 +28,7 @@ public class LlmCommand {
                     })))
             .then(CommandManager.literal("download")
                 .then(CommandManager.argument("repo", StringArgumentType.string())
-                    .then(CommandManager.argument("file", StringArgumentType.string())
+                    .then(CommandManager.argument("file", StringArgumentType.greedyString())
                         .executes(ctx -> {
                             String repo = StringArgumentType.getString(ctx, "repo");
                             String file = StringArgumentType.getString(ctx, "file");
@@ -45,7 +45,7 @@ public class LlmCommand {
                             return 1;
                         }))))
             .then(CommandManager.literal("load")
-                .then(CommandManager.argument("model", StringArgumentType.string())
+                .then(CommandManager.argument("model", StringArgumentType.greedyString())
                     .executes(ctx -> {
                         String name = StringArgumentType.getString(ctx, "model");
                         ctx.getSource().sendFeedback(() -> Text.literal("Loading model " + name + "..."), false);
