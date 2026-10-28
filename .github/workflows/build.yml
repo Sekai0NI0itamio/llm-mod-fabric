@@ -19,17 +19,6 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Prepare local maven repo for Fabric API
-        run: |
-          FV="0.92.2+1.20.1"
-          DIR="localmaven/net/fabricmc/fabric-api/fabric-api/${FV}"
-          mkdir -p "$DIR"
-          curl -sL -o "$DIR/fabric-api-${FV}.pom" \
-            "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/${FV}/fabric-api-${FV}.pom"
-          curl -sL -o "$DIR/fabric-api-${FV}.jar" \
-            "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/${FV}/fabric-api-${FV}.jar"
-          ls -la "$DIR"
-
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
 
@@ -56,17 +45,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential cmake curl libcurl4-openssl-dev
-      - name: Configure CMake (CURL enabled)
-        working-directory: java-llama.cpp
-        run: |
-          mvn -q -o compile 2>/dev/null || true
-          cmake -S . -B build -DLLAMA_CURL=ON -DLLAMA_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release
       - name: Build native libs
         working-directory: java-llama.cpp
-        run: cmake --build build --config Release -j 2
+        run: |
+          mvn -q compile 2>/dev/null || true
+          cmake -S . -B build -DLLAMA_CURL=ON -DLLAMA_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release 2>&1 | tail -5
+          cmake --build build --config Release -j 2 2>&1 | tail -5
       - name: Upload native libs
         uses: actions/upload-artifact@v4
         with:
           name: jllama-native-linux-x86_64
-          path: |
-            java-llama.cpp/build/**/*.so
+          path: java-llama.cpp/build/**/*.so

@@ -13,7 +13,6 @@ base {
 repositories {
     mavenCentral()
     maven { url = 'https://maven.fabricmc.net/' }
-    maven { url = uri("$rootDir/localmaven") }
 }
 
 dependencies {
@@ -22,11 +21,7 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    // Fabric API (resolved from local maven repo populated in CI).
-    modImplementation "net.fabricmc:fabric-api:${project.fabric_version}"
-
     // Inference engine: java-llama.cpp (bundles native libs for Linux x86-64 CPU)
-    // Native compilation flags (if rebuilding from source): -DLLAMA_CURL=ON -DLLAMA_BUILD_TESTS=OFF
     modImplementation "de.kherud:llama:${project.llama_version}"
     include "de.kherud:llama:${project.llama_version}"
 }

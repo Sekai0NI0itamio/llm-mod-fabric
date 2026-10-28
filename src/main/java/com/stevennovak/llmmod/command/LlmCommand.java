@@ -6,7 +6,6 @@ import com.stevennovak.llmmod.config.LlmConfig;
 import com.stevennovak.llmmod.http.LlmHttpServer;
 import com.stevennovak.llmmod.inference.LlamaEngine;
 
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -14,11 +13,7 @@ import net.minecraft.text.Text;
 import java.nio.file.Path;
 
 public class LlmCommand {
-    public static void register() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> register(dispatcher));
-    }
-
-    private static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("llm")
             .requires(src -> src.hasPermissionLevel(2))
             .then(CommandManager.literal("setapiKey")
@@ -89,3 +84,6 @@ public class LlmCommand {
         );
     }
 }
+">
+path">
+/Users/stevennovak/Desktop/Code Projects/GithubBasedEngineering/Mods/llm-mod-fabric/src/main/java/com/stevennovak/llmmod/command/LlmCommand.java
