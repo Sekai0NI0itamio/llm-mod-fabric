@@ -84,6 +84,3 @@ public class LlmCommand {
         );
     }
 }
-">
-path">
-/Users/stevennovak/Desktop/Code Projects/GithubBasedEngineering/Mods/llm-mod-fabric/src/main/java/com/stevennovak/llmmod/command/LlmCommand.java
