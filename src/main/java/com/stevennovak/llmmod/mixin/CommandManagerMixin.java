@@ -21,6 +21,3 @@ public abstract class CommandManagerMixin {
         LlmCommand.register(llmmod$getDispatcher());
     }
 }
-">
-path">
-/Users/stevennovak/Desktop/Code Projects/GithubBasedEngineering/Mods/llm-mod-fabric/src/main/java/com/stevennovak/llmmod/mixin/CommandManagerMixin.java
