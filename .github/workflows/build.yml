@@ -7,10 +7,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-mod:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout mod
         uses: actions/checkout@v4
 
       - name: Set up Java 17
@@ -19,10 +19,42 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Install build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake curl libcurl4-openssl-dev maven
+
+      - name: Clone java-llama.cpp (master)
+        run: |
+          git clone --depth 1 https://github.com/kherud/java-llama.cpp.git java-llama.cpp
+
+      - name: Patch llama.cpp to a qwen35-capable build
+        working-directory: java-llama.cpp
+        run: |
+          sed -i 's/GIT_TAG        b4916/GIT_TAG        b9000/' CMakeLists.txt
+          grep -n "GIT_TAG" CMakeLists.txt
+
+      - name: Compile Java (generates JNI headers)
+        working-directory: java-llama.cpp
+        run: mvn -q compile
+
+      - name: Build native libs (CURL enabled)
+        working-directory: java-llama.cpp
+        run: |
+          cmake -S . -B build \
+            -DLLAMA_CURL=ON \
+            -DLLAMA_BUILD_TESTS=OFF \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release -j 2
+
+      - name: Package & install java-llama.cpp to local maven
+        working-directory: java-llama.cpp
+        run: mvn -q package install:install-file -DskipTests -Dfile=target/llama-4.2.0.jar -DpomFile=pom.xml
+
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
 
-      - name: Build with Gradle
+      - name: Build mod with Gradle
         run: ./gradlew build --no-daemon
 
       - name: Upload mod artifact
@@ -31,28 +63,3 @@ jobs:
         with:
           name: llm-mod
           path: build/libs/*.jar
-
-  build-native-llama:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: Checkout java-llama.cpp
-        uses: actions/checkout@v4
-        with:
-          repository: kherud/java-llama.cpp
-          path: java-llama.cpp
-      - name: Install build deps
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential cmake curl libcurl4-openssl-dev
-      - name: Build native libs
-        working-directory: java-llama.cpp
-        run: |
-          mvn -q compile 2>/dev/null || true
-          cmake -S . -B build -DLLAMA_CURL=ON -DLLAMA_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release 2>&1 | tail -5
-          cmake --build build --config Release -j 2 2>&1 | tail -5
-      - name: Upload native libs
-        uses: actions/upload-artifact@v4
-        with:
-          name: jllama-native-linux-x86_64
-          path: java-llama.cpp/build/**/*.so
