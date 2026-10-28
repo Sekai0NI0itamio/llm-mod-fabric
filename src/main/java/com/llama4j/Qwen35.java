@@ -3044,7 +3044,7 @@ public class Qwen35 {
 
     static Sampler selectSampler(int vocabularySize, float temperature, float topp, long rngSeed) {
         if (temperature == 0.0f) return Sampler.ARGMAX;
-        RandomGenerator rng = RandomGeneratorFactory.getDefault().create(rngSeed);
+        RandomGenerator rng = new java.util.Random(rngSeed);
         Sampler innerSampler = (topp <= 0 || topp >= 1) ? new CategoricalSampler(rng) : new ToppSampler(vocabularySize, topp, rng);
         return logits -> {
             int logitsSize = Math.toIntExact(logits.size());
