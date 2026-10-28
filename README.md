@@ -34,6 +34,12 @@ Turns a Minecraft server into a self-contained, local LLM inference engine. Runs
 
 Compatible with Continue, Cline, Roo, etc. Set base URL to `http://<server>:<port>/v1`.
 
-## Build
+## Presets
 
-Built via GitHub Actions (`.github/workflows/build.yml`). Native `java-llama.cpp` libs are compiled with `-DLLAMA_CURL=ON` in the `build-native-llama` job.
+Built-in presets (use `/llm presets` to list, `/llm preset <name>` to apply — downloads + loads):
+
+- `qwopus-4b-coder-mtp` (default) — Qwopus3.5-4B-Coder-MTP Q4_K_M, 3 threads, 4096 ctx
+- `qwen2.5-coder-7b` — Qwen2.5-Coder-7B-Instruct Q4_K_M, 2 threads, 4096 ctx
+- `qwopus-9b-coder` — Qwopus3.5-9B-Coder Q4_K_M, 2 threads, 4096 ctx (needs more RAM)
+
+Default API secret: `12y081g20808y01` (change with `/llm setapiKey`).
