@@ -5,6 +5,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.stevennovak.llmmod.config.LlmConfig;
 import com.stevennovak.llmmod.http.LlmHttpServer;
 import com.stevennovak.llmmod.inference.LlamaEngine;
+import com.stevennovak.llmmod.preset.Preset;
+import com.stevennovak.llmmod.preset.Presets;
 
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -81,6 +83,52 @@ public class LlmCommand {
                     ctx.getSource().sendFeedback(() -> Text.literal("Model unloaded."), false);
                     return 1;
                 }))
+            .then(CommandManager.literal("presets")
+                .executes(ctx -> {
+                    StringBuilder sb = new StringBuilder("Available presets:\n");
+                    for (Preset p : Presets.all().values()) {
+                        sb.append(" - ").append(p.name).append(" : ").append(p.displayName).append("\n");
+                    }
+                    sb.append("Use /llm preset <name> to apply.");
+                    ctx.getSource().sendFeedback(() -> Text.literal(sb.toString()), false);
+                    return 1;
+                }))
+            .then(CommandManager.literal("preset")
+                .then(CommandManager.argument("name", StringArgumentType.greedyString())
+                    .executes(ctx -> {
+                        String name = StringArgumentType.getString(ctx, "name").trim();
+                        Preset p = Presets.get(name);
+                        if (p == null) {
+                            ctx.getSource().sendError(Text.literal("Unknown preset: " + name));
+                            return 0;
+                        }
+                        LlmConfig cfg = LlmConfig.get();
+                        cfg.preset = p.name;
+                        cfg.modelName = p.file;
+                        cfg.systemPrompt = p.systemPrompt;
+                        cfg.threads = p.threads;
+                        cfg.contextLength = p.contextLength;
+                        cfg.maxTokens = p.maxTokens;
+                        cfg.temperature = p.temperature;
+                        LlmConfig.save(cfg);
+                        ctx.getSource().sendFeedback(() -> Text.literal("Preset applied: " + p.displayName), false);
+                        net.minecraft.server.MinecraftServer server = ctx.getSource().getServer();
+                        new Thread(() -> {
+                            try {
+                                Path dest = LlmConfig.getModelsDir().resolve(p.file);
+                                if (!java.nio.file.Files.exists(dest)) {
+                                    ctx.getSource().sendFeedback(() -> Text.literal("Downloading " + p.file + "..."), false);
+                                    ModelDownloader.download(p.repo, p.file);
+                                }
+                                server.execute(() -> ctx.getSource().sendFeedback(() -> Text.literal("Loading model..."), false));
+                                LlmHttpServer.getEngine().load(dest);
+                                server.execute(() -> ctx.getSource().sendFeedback(() -> Text.literal("Model loaded: " + p.file), false));
+                            } catch (Exception e) {
+                                server.execute(() -> ctx.getSource().sendError(Text.literal("Preset load failed: " + e.getMessage())));
+                            }
+                        }, "llm-preset").start();
+                        return 1;
+                    })))
         );
     }
 }
