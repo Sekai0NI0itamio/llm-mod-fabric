@@ -14,7 +14,7 @@ public class Qwen35Inference {
 
     public synchronized void load(java.nio.file.Path path, int contextLength) throws java.io.IOException {
         unload();
-        model = Qwen35.loadModel(path, contextLength);
+        model = ModelLoader.loadModel(path, contextLength);
         loadedName = path.getFileName().toString();
     }
 
@@ -47,7 +47,6 @@ public class Qwen35Inference {
         if (!responseTokens.isEmpty() && stopTokens.contains(responseTokens.getLast())) {
             responseTokens.removeLast();
         }
-        List<Integer> visible = Qwen35.visibleTokens(m.tokenizer, responseTokens, false);
-        return m.tokenizer.decode(visible);
+        return m.tokenizer.decode(responseTokens);
     }
 }
