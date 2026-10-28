@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "llmmod",
+  "version": "${version}",
+  "name": "LLM Mod",
+  "description": "Turns a Minecraft server into a self-contained local LLM inference engine with an OpenAI-compatible API.",
+  "authors": [
+    "Steven Novak"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/llmmod/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "com.stevennovak.llmmod.LlmMod"
+    ]
+  },
+  "mixins": [],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "fabric-api": "*"
+  }
+}
+">
+path">
+/Users/stevennovak/Desktop/Code Projects/GithubBasedEngineering/Mods/llm-mod-fabric/src/main/resources/fabric.mod.json
