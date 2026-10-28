@@ -22,7 +22,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API jar is downloaded in CI to libs/ (avoids '+' dynamic-version resolution).
-    implementation files("libs/fabric-api-${project.fabric_version}.jar")
+    modCompileOnly files("libs/fabric-api-${project.fabric_version}.jar")
 
     // Inference engine: java-llama.cpp (bundles native libs for Linux x86-64 CPU)
     // Native compilation flags (if rebuilding from source): -DLLAMA_CURL=ON -DLLAMA_BUILD_TESTS=OFF
