@@ -12,10 +12,32 @@ public class QwenChatFormat {
     public QwenChatFormat(QwenTokenizer tokenizer) {
         this.tokenizer = tokenizer;
         Map<String, Integer> specials = tokenizer.specialTokens();
-        this.imStart = specials.get("<|im_start|>");
-        this.imEnd = specials.get("<|im_end|>");
+        // Debug: print special tokens containing "im"
+        for (Map.Entry<String, Integer> e : specials.entrySet()) {
+            if (e.getKey().contains("im_")) {
+                System.err.println("[LLMMod] special token: '" + e.getKey() + "' = " + e.getValue());
+            }
+        }
+        Integer is = specials.get(" “");
+        if (is == null) {
+            // try variants
+            for (Map.Entry<String, Integer> e : specials.entrySet()) {
+                if (e.getKey().contains("im_start")) { is = e.getValue(); break; }
+            }
+        }
+        Integer ie = specials.get(" “");
+        if (ie == null) {
+            for (Map.Entry<String, Integer> e : specials.entrySet()) {
+                if (e.getKey().contains("im_end")) { ie = e.getValue(); break; }
+            }
+        }
+        this.imStart = (is == null) ? -1 : is;
+        this.imEnd = (ie == null) ? -1 : ie;
         this.thinkOpen = specials.getOrDefault("<think>", -1);
         this.thinkClose = specials.getOrDefault("</think>", -1);
+        if (imStart < 0 || imEnd < 0) {
+            throw new IllegalStateException("Could not find im_start/im_end special tokens. imStart=" + imStart + " imEnd=" + imEnd);
+        }
     }
 
     public Set<Integer> getStopTokens() {
@@ -39,7 +61,6 @@ public class QwenChatFormat {
         tokens.add(imStart);
         tokens.addAll(tokenizer.encodeAsList(role + "\n"));
         if ("assistant".equals(role) && !think && thinkOpen >= 0 && thinkClose >= 0) {
-            // Add empty think block to disable thinking mode
             tokens.add(thinkOpen);
             tokens.addAll(tokenizer.encodeAsList("\n\n"));
             tokens.add(thinkClose);

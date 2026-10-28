@@ -150,7 +150,8 @@ public class LlmHttpServer {
             try {
                 content = ENGINE.complete(null, chatMsgs, sys, maxTokens, temp);
             } catch (Exception e) {
-                sendJson(ex, 500, "{\"error\":\"" + e.getMessage().replace("\"", "'") + "\"}");
+                e.printStackTrace();
+                sendJson(ex, 500, "{\"error\":\"" + e.toString().replace("\"", "'") + "\"}");
                 return;
             }
             // strip trailing im_end if present
@@ -202,7 +203,7 @@ public class LlmHttpServer {
             if (!ENGINE.isLoaded()) { sendJson(ex, 503, "{\"error\":\"no model loaded\"}"); return; }
             String content;
             try { content = ENGINE.complete(prompt, null, LlmConfig.get().systemPrompt, maxTokens, temp); }
-            catch (Exception e) { sendJson(ex, 500, "{\"error\":\"" + e.getMessage().replace("\"","'") + "\"}"); return; }
+            catch (Exception e) { e.printStackTrace(); sendJson(ex, 500, "{\"error\":\"" + e.toString().replace("\"","'") + "\"}"); return; }
             content = content.replace("<|im_end|>", "").trim();
             JsonObject choice = new JsonObject();
             choice.addProperty("text", content);
