@@ -117,7 +117,7 @@ public class LlmCommand {
                             try {
                                 Path dest = LlmConfig.getModelsDir().resolve(p.file);
                                 if (!java.nio.file.Files.exists(dest)) {
-                                    ctx.getSource().sendFeedback(() -> Text.literal("Downloading " + p.file + "..."), false);
+                                    server.execute(() -> ctx.getSource().sendFeedback(() -> Text.literal("Downloading " + p.file + "..."), false));
                                     ModelDownloader.download(p.repo, p.file);
                                 }
                                 server.execute(() -> ctx.getSource().sendFeedback(() -> Text.literal("Loading model..."), false));
@@ -127,6 +127,22 @@ public class LlmCommand {
                                 server.execute(() -> ctx.getSource().sendError(Text.literal("Preset load failed: " + e.getMessage())));
                             }
                         }, "llm-preset").start();
+                        return 1;
+                    })))
+            .then(CommandManager.literal("chat")
+                .then(CommandManager.argument("prompt", StringArgumentType.greedyString())
+                    .executes(ctx -> {
+                        String prompt = StringArgumentType.getString(ctx, "prompt").trim();
+                        ctx.getSource().sendFeedback(() -> Text.literal("Generating..."), false);
+                        net.minecraft.server.MinecraftServer server = ctx.getSource().getServer();
+                        new Thread(() -> {
+                            try {
+                                String reply = LlmHttpServer.getEngine().complete(prompt, null, LlmConfig.get().systemPrompt, LlmConfig.get().maxTokens, LlmConfig.get().temperature);
+                                server.execute(() -> ctx.getSource().sendFeedback(() -> Text.literal("AI: " + reply), false));
+                            } catch (Exception e) {
+                                server.execute(() -> ctx.getSource().sendError(Text.literal("Generation failed: " + e.getMessage())));
+                            }
+                        }, "llm-chat").start();
                         return 1;
                     })))
         );
