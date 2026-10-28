@@ -29,9 +29,11 @@ processResources {
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    it.options.release = 21
-    it.options.compilerArgs += ['--enable-preview', '--add-modules', 'jdk.incubator.vector']
+compileJava {
+    options.release = 21
+    options.compilerArgs = ['--enable-preview', '--add-modules', 'jdk.incubator.vector']
+    options.fork = true
+    options.forkOptions.jvmArgs = ['--add-modules', 'jdk.incubator.vector']
 }
 
 java {
